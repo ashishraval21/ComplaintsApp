@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 
 public class Registration implements Serializable {
+
+
     public String getEmail() {
         return Email;
     }
@@ -60,12 +62,22 @@ public class Registration implements Serializable {
         UserType = userType;
     }
 
+    private Integer Id;
     private String Email;
+
+    public Integer getId() {
+        return Id;
+    }
+
+    public void setId(Integer id) {
+        Id = id;
+    }
+
     private String Password;
     private String FirstName;
     private String LastName;
     private String MobileNo;
     private String Gender;
-    private int UserType = 3;
+    private Integer UserType = 3;
     
 }

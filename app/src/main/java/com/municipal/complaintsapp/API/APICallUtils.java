@@ -1,16 +1,27 @@
 package com.municipal.complaintsapp.API;
 
+import android.provider.MediaStore;
+import android.webkit.MimeTypeMap;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 public class APICallUtils {
 
@@ -34,6 +45,31 @@ public class APICallUtils {
             MediaType JSON = MediaType.parse("application/json; charset=utf-8");
             RequestBody body = RequestBody.create(JSON, jsonObject.toString());
             builder.put(body);
+        } else if (method.equalsIgnoreCase("POST_MULTIPART")) {
+
+            MultipartBody.Builder multiPartBodyRequest = new MultipartBody.Builder().setType(MultipartBody.FORM);
+
+            List<MultipartBody.Part> bodyParts = new ArrayList<>();
+            try {
+                JSONArray images = jsonObject.getJSONArray("images");
+                if(images.length() > 0){
+                    int i =0;
+                    for(; i< images.length(); i++){
+                        String path = images.getString(i);
+                        File file = new File(images.getString(i));
+                        System.out.print("API CALL PATH "+path+"  => "+file.exists());
+                        multiPartBodyRequest.addFormDataPart("Attachments", file.getName(), RequestBody.create(MediaType.parse("image/*"), file));
+                    }
+
+                }
+
+                multiPartBodyRequest.addFormDataPart("Complaint", jsonObject.toString());
+                builder.post(multiPartBodyRequest.build());
+
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+
         }
 
         Request request = builder.build();
@@ -57,6 +93,14 @@ public class APICallUtils {
         return (code >= 200 && code < 400);
     }
 
+    public static String getMimeType(String url) {
+        String type = null;
+        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+        if (extension != null) {
+            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+        }
+        return type;
+    }
 
 //public void makeApiCallWithRetry(url, method, jsonObject, new Callback() {
 //    @Override

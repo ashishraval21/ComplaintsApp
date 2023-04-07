@@ -7,6 +7,8 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
 
     <application
         android:allowBackup="true"
@@ -14,10 +16,10 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ComplaintsApp"
         android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true"
         android:networkSecurityConfig="@xml/network_security_config"
         tools:targetApi="30">
         <activity
@@ -38,17 +40,19 @@
             android:name=".ChangePassword"
             android:exported="false"
             android:label="@string/title_activity_change_password"
-            android:theme="@style/Theme.ComplaintsApp.NoActionBar" />
+            android:theme="@style/Theme.ComplaintsApp.NoActionBar" >
+
+        </activity>
         <activity
             android:name=".register"
             android:exported="true"
-            android:label="@string/title_activity_register"
             android:theme="@style/Theme.ComplaintsApp.NoActionBar" >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity
             android:name=".MainActivity"

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.AddComplaintFragment">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/subject"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:hint="Subject">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/description"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_below="@+id/subject"
+            android:hint="Description">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:gravity="top|left"
+                android:inputType="textMultiLine"
+                android:overScrollMode="always"
+                android:scrollbarStyle="insideInset"
+                android:scrollbars="vertical"
+                android:lines="6"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:scrollHorizontally="false"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/image_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Images:"
+            android:textStyle="bold"
+            android:layout_below="@id/description"
+            android:layout_marginTop="16dp"/>
+
+        <GridView
+            android:id="@+id/image_grid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numColumns="3"
+            android:layout_margin="10dp"
+            android:horizontalSpacing="5dp"
+            android:verticalSpacing="5dp"
+            android:animateLayoutChanges="true"
+            android:layout_below="@id/image_label"
+            android:layout_marginTop="8dp"/>
+
+        <Button
+            android:id="@+id/add_image_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Images"
+            android:layout_below="@id/image_grid"
+            android:layout_marginTop="16dp"
+            android:layout_alignParentStart="true"/>
+
+        <Button
+            android:id="@+id/submit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Submit"
+            android:layout_below="@id/image_grid"
+            android:layout_toRightOf="@id/add_image_button"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp" />
+
+        <Button
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:layout_below="@id/image_grid"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_toRightOf="@id/submit_button"/>
+
+    </RelativeLayout>
+
+
+</FrameLayout>

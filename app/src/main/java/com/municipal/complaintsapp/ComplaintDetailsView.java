@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,6 +34,7 @@ public class ComplaintDetailsView extends AppCompatActivity {
         setContentView(R.layout.activity_complaint_details_view);
 
         getSupportActionBar().setTitle("Complaint Id : C002102 ");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         complaint = (Complaint) getIntent().getSerializableExtra("complaint");
 
         // Update the UI with the complaint details
@@ -71,6 +73,14 @@ public class ComplaintDetailsView extends AppCompatActivity {
         }
     }
 
-
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 }

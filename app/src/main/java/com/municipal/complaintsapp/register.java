@@ -24,6 +24,7 @@ import com.municipal.complaintsapp.classes.Registration;
 import com.municipal.complaintsapp.databinding.ActivityRegisterBinding;
 import com.municipal.complaintsapp.util.ActivityUtil;
 import com.municipal.complaintsapp.util.ErrorMessage;
+import com.municipal.complaintsapp.util.SharedPreference;
 
 import java.io.IOException;
 
@@ -36,12 +37,25 @@ public class register extends AppCompatActivity {
     private AppBarConfiguration appBarConfiguration;
     private ActivityRegisterBinding binding;
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         binding = ActivityRegisterBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+
+        if(new SharedPreference(getApplicationContext()).isSharedPreferenceAvailable()){
+            ActivityUtil.nextScreen(register.this, ComplaintListActivity.class, null);
+            finish();
+        }
+
+
+
+
 
         ImageView view = findViewById(R.id.imageLogo);
         view.setImageResource(R.drawable.cmslogos);
@@ -68,6 +82,7 @@ public class register extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ActivityUtil.nextScreen(register.this, MainActivity.class, null);
+                finish();
             }
         });
 
@@ -89,6 +104,7 @@ public class register extends AppCompatActivity {
                                 Snackbar mySnackbar = Snackbar.make(view1, "Registration Successful, Please Verify Your Email Now.", BaseTransientBottomBar.LENGTH_LONG);
                                 mySnackbar.show();
                                 ActivityUtil.nextScreen(register.this, MainActivity.class, null);
+                                finish();
                             }
                         }
 
@@ -106,6 +122,7 @@ public class register extends AppCompatActivity {
         });
 
     }
+
 
 
 }

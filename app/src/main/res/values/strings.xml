@@ -28,4 +28,12 @@
     <string name="complaint_details_description_label">Description :  </string>
     <string name="enter_email_id">Enter Email ID</string>
     <string name="enter_password">Enter Password</string>
+
+
+    <!-- to toggle the open close button of the navigation drawer -->
+    <string name="nav_open">Open</string>
+    <string name="nav_close">Close</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

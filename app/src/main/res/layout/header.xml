@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:orientation="vertical"
+    android:background="@color/colorPrimaryDark"
+    android:gravity="center_horizontal"
+    android:padding="25dp">
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/app_logo">
+
+    </ImageView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/cormorant_garamond"
+        android:text="We are Ready to Help you !!!"
+        android:textColor="@color/colorBackground"
+        android:textSize="22sp">
+
+
+    </TextView>
+
+
+
+</LinearLayout>
