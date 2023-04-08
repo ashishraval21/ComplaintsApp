@@ -2,6 +2,7 @@ package com.municipal.complaintsapp.fragment;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,14 +10,31 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.JsonParser;
+import com.municipal.complaintsapp.API.APICallUtils;
+import com.municipal.complaintsapp.API.ApiList;
+import com.municipal.complaintsapp.API.JsonUtils;
+import com.municipal.complaintsapp.API.MethodType;
 import com.municipal.complaintsapp.R;
 import com.municipal.complaintsapp.complaint.Complaint;
 import com.municipal.complaintsapp.complaint.ComplaintAdapter;
+import com.municipal.complaintsapp.util.SharedPreference;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,6 +54,7 @@ public class ComplaintListFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private ComplaintAdapter complaintAdapter;
 
     public ComplaintListFragment() {
         // Required empty public constructor
@@ -62,48 +81,84 @@ public class ComplaintListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-        complaints.add(new Complaint("Street light not working.", "Pending", new Date(123, 3, 15, 15, 42, 25), "Street light not working from past couple of days."));
-//            complaints.add(new Complaint("Printer out of ink", "Resolved", new Date()));
-//            complaints.add(new Complaint("Slow internet speed", "Pending", new Date()));
-//            complaints.add(new Complaint("Wi-Fi not working", "Pending", new Date()));
-//            complaints.add(new Complaint("Printer out of ink", "Resolved", new Date()));
-//            complaints.add(new Complaint("Slow internet speed", "Pending", new Date()));
-//            complaints.add(new Complaint("Wi-Fi not working", "Pending", new Date()));
-//            complaints.add(new Complaint("Printer out of ink", "Resolved", new Date()));
-//            complaints.add(new Complaint("Slow internet speed", "Pending", new Date()));
-//            complaints.add(new Complaint("Wi-Fi not working", "Pending", new Date()));
-//            complaints.add(new Complaint("Printer out of ink", "Resolved", new Date()));
-//            complaints.add(new Complaint("Slow internet speed", "Pending", new Date()));    complaints.add(new Complaint("Wi-Fi not working", "Pending", new Date()));
-//            complaints.add(new Complaint("Printer out of ink", "Resolved", new Date()));
-//            complaints.add(new Complaint("Slow internet speed", "Pending", new Date()));
-//            complaints.add(new Complaint("Wi-Fi not working", "Pending", new Date()));
-//            complaints.add(new Complaint("Printer out of ink", "Resolved", new Date()));
-//            complaints.add(new Complaint("Slow internet speed", "Pending", new Date()));
-//            complaints.add(new Complaint("Wi-Fi not working", "Pending", new Date()));
-//            complaints.add(new Complaint("Printer out of ink", "Resolved", new Date()));
-//            complaints.add(new Complaint("Slow internet speed", "Pending", new Date()));
-
-
-
-
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        showProgressBar(true);
         // Initialize RecyclerView
         View fragmentView = inflater.inflate(R.layout.fragment_complaint_list, container, false);
-
         recyclerView = fragmentView.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new ComplaintAdapter(complaints, getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(fragmentView.getContext()));
+        complaintAdapter = new ComplaintAdapter(complaints, fragmentView.getContext());
+
+        APICallUtils.makeApiCallWithRetry(ApiList.FetchAllComplaints.getApi() + new SharedPreference(getActivity()).getId(),
+                MethodType.GET.name(), new JSONObject(), new Callback() {
+                    @Override
+                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                        e.printStackTrace();
+                        Snackbar mySnackbar = Snackbar.make(fragmentView, e.getMessage(), BaseTransientBottomBar.LENGTH_LONG);
+                        mySnackbar.show();
+                    }
+
+                    @Override
+                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                        if(response.isSuccessful()){
+
+                            try{
+                                JSONArray array = new JSONArray(response.body().string());
+                                if(array.length() == 0){
+
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            fragmentView.findViewById(R.id.emptyMessageLayout).setVisibility(View.VISIBLE);
+
+                                            Snackbar mySnackbar = Snackbar.make(fragmentView, "No Complaints Found.", BaseTransientBottomBar.LENGTH_LONG);
+                                            mySnackbar.show();
+                                        }
+                                    });
+
+                                }else {
+
+                                    for(int  i = 0; i< array.length(); i++){
+                                        Complaint complaint = JsonUtils.fromJson((JSONObject) array.get(i), Complaint.class);
+                                        complaints.add(complaint);
+                                    }
+
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            recyclerView.setAdapter(complaintAdapter);
+                                        }
+                                    });
+
+
+                                }
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+
+
+                        }
+                    }
+                });
+
+
+
+
+
         // Inflate the layout for this fragment
+        showProgressBar(false);
         return fragmentView;
     }
+
+    public void showProgressBar(boolean show) {
+        ProgressBar progressBar = requireActivity().findViewById(R.id.progress_bar);
+        progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+
 }

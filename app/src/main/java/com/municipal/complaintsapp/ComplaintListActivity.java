@@ -10,6 +10,8 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.google.android.material.navigation.NavigationView;
 import com.municipal.complaintsapp.fragment.AddComplaintFragment;
@@ -97,6 +99,12 @@ public class ComplaintListActivity extends AppCompatActivity implements Navigati
             drawer.closeDrawer(GravityCompat.START);
 
         }
+
+    public void showProgressBar(boolean show) {
+        ProgressBar progressBar = findViewById(R.id.progress_bar);
+        progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
     }
 
 

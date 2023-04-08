@@ -6,7 +6,13 @@ public enum ApiList {
 
     ChangePassword("api/User/ChangePassword"),
 
-    AddComplaint("api/Complaint/AddCompaint");
+    AddComplaint("api/Complaint/AddCompaint"),
+
+    FetchAllComplaints("api/Complaint/GetComplaintsByUser/"),
+
+    FetchComplaintById("/api/Complaint/GetComplaintById/"),
+
+    FetchCategoryTypes("/api/Category/GetAllCategory");
     Environment environment = Environment.live;
 
     private final String api;

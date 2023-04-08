@@ -2,35 +2,62 @@ package com.municipal.complaintsapp.complaint;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 public class Complaint  implements Serializable {
-    private String title;
 
-    private String description;
-    private String status;
-    private Date date;
+    private int Id;
+    private String Title;
 
-    public Complaint(String title, String status, Date date, String description) {
-        this.title = title;
-        this.status = status;
-        this.date = date;
-        this.description = description;
+    private String Description;
+    private String Status;
+    private Date Date;
+
+    private List<Attachment> Attachments;
+
+    private String Latitude;
+
+    private String Longitude;
+
+    public Complaint( int id, String title, String status, Date date, String description, List<Attachment> Attachments, String Latitude, String Longitude) {
+        this.Id = id;
+        this.Title = title;
+        this.Status = status;
+        this.Date = date;
+        this.Description = description;
+        this.Attachments =Attachments;
+        this.Latitude = Latitude;
+        this.Longitude = Longitude;
     }
 
     public String getTitle() {
-        return title;
+        return Title;
     }
 
     public String getStatus() {
-        return status;
+        return Status;
     }
 
     public Date getDate() {
-        return date;
+        return Date == null ? new Date() : Date;
     }
     public String getDescription(){
-        return description;
+        return Description;
     }
 
+    public int getId() {
+        return Id;
+    }
 
+    public List<Attachment> getAttachments() {
+        return Attachments;
+    }
+
+    public String getLatitude() {
+        return Latitude;
+    }
+
+    public String getLongitude() {
+        return Longitude;
+    }
 }

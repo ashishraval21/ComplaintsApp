@@ -9,8 +9,29 @@
         android:layout_height="match_parent"
         android:padding="16dp">
 
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayoutCategoryType"
+            android:layout_width="match_parent"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:hint="Category Type">
+
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                android:id="@+id/autoCompleteTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                tools:ignore="KeyboardInaccessibleWidget" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/subject"
+            android:layout_below="@id/textInputLayoutCategoryType"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -62,13 +83,15 @@
             android:id="@+id/image_grid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:numColumns="3"
-            android:layout_margin="10dp"
-            android:horizontalSpacing="5dp"
-            android:verticalSpacing="5dp"
-            android:animateLayoutChanges="true"
             android:layout_below="@id/image_label"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:animateLayoutChanges="true"
+            android:horizontalSpacing="5dp"
+            android:numColumns="3"
+            android:verticalSpacing="5dp" />
 
         <Button
             android:id="@+id/add_image_button"

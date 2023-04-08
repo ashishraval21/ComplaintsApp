@@ -58,7 +58,7 @@ public class APICallUtils {
                         String path = images.getString(i);
                         File file = new File(images.getString(i));
                         System.out.print("API CALL PATH "+path+"  => "+file.exists());
-                        multiPartBodyRequest.addFormDataPart("Attachments", file.getName(), RequestBody.create(MediaType.parse("image/*"), file));
+                        multiPartBodyRequest.addFormDataPart("Attachments" + i, file.getName(), RequestBody.create(MediaType.parse("image/*"), file));
                     }
 
                 }

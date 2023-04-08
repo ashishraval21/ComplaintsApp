@@ -65,7 +65,7 @@
             android:autofillHints="emailAddress"
             android:inputType="textEmailAddress"
             android:padding="20dp"
-            android:text="ravafssdsf@gmail.com"
+            android:text="raval123@gmail.com"
             android:textColorHint="#004D40" />
 
     </com.google.android.material.textfield.TextInputLayout>
