@@ -34,6 +34,10 @@
         <color name="colorCustom4">#FF5722</color>
         <color name="colorCustom5">#607D8B</color>
 
+        <color name="errorColor">#FF0000</color>
+        <color name ="successColor">#00FF00</color>
+
+
 
 
 </resources>

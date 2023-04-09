@@ -12,7 +12,9 @@ public enum ApiList {
 
     FetchComplaintById("/api/Complaint/GetComplaintById/"),
 
-    FetchCategoryTypes("/api/Category/GetAllCategory");
+    FetchCategoryTypes("/api/Category/GetAllCategory"),
+
+    UpadateUserDetails("/api/User/UpdateUser");
     Environment environment = Environment.live;
 
     private final String api;

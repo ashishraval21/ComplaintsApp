@@ -22,6 +22,7 @@ import com.municipal.complaintsapp.API.MethodType;
 import com.municipal.complaintsapp.R;
 import com.municipal.complaintsapp.complaint.Complaint;
 import com.municipal.complaintsapp.complaint.ComplaintAdapter;
+import com.municipal.complaintsapp.util.BackgroundTask;
 import com.municipal.complaintsapp.util.SharedPreference;
 
 import org.json.JSONArray;
@@ -87,72 +88,90 @@ public class ComplaintListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        showProgressBar(true);
+
         // Initialize RecyclerView
         View fragmentView = inflater.inflate(R.layout.fragment_complaint_list, container, false);
         recyclerView = fragmentView.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(fragmentView.getContext()));
         complaintAdapter = new ComplaintAdapter(complaints, fragmentView.getContext());
+        callBackgroundTask();
+        // Inflate the layout for this fragment
+        return fragmentView;
+    }
 
-        APICallUtils.makeApiCallWithRetry(ApiList.FetchAllComplaints.getApi() + new SharedPreference(getActivity()).getId(),
-                MethodType.GET.name(), new JSONObject(), new Callback() {
-                    @Override
-                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                        e.printStackTrace();
-                        Snackbar mySnackbar = Snackbar.make(fragmentView, e.getMessage(), BaseTransientBottomBar.LENGTH_LONG);
-                        mySnackbar.show();
-                    }
+    private void callBackgroundTask() {
+        showProgressBar(true);
+        BackgroundTask<String> backgroundTask = new BackgroundTask<>(new BackgroundTask.BackgroundTaskExecutor<String>() {
+            @Override
+            public String run() throws Exception {
+                APICallUtils.makeApiCallWithRetry(ApiList.FetchAllComplaints.getApi() + new SharedPreference(getActivity()).getId(),
+                        MethodType.GET.name(), new JSONObject(), new Callback() {
+                            @Override
+                            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                e.printStackTrace();
+                                Snackbar mySnackbar = Snackbar.make(requireView(), e.getMessage(), BaseTransientBottomBar.LENGTH_LONG);
+                                mySnackbar.show();
+                            }
 
-                    @Override
-                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                        if(response.isSuccessful()){
+                            @Override
+                            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                if(response.isSuccessful()){
 
-                            try{
-                                JSONArray array = new JSONArray(response.body().string());
-                                if(array.length() == 0){
+                                    try{
+                                        JSONArray array = new JSONArray(response.body().string());
+                                        if(array.length() == 0){
 
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            fragmentView.findViewById(R.id.emptyMessageLayout).setVisibility(View.VISIBLE);
+                                            getActivity().runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    requireActivity().findViewById(R.id.emptyMessageLayout).setVisibility(View.VISIBLE);
 
-                                            Snackbar mySnackbar = Snackbar.make(fragmentView, "No Complaints Found.", BaseTransientBottomBar.LENGTH_LONG);
-                                            mySnackbar.show();
+                                                    Snackbar mySnackbar = Snackbar.make(requireView(), "No Complaints Found.", BaseTransientBottomBar.LENGTH_LONG);
+                                                    mySnackbar.show();
+                                                }
+                                            });
+
+                                        }else {
+
+                                            for(int  i = 0; i< array.length(); i++){
+                                                Complaint complaint = JsonUtils.fromJson((JSONObject) array.get(i), Complaint.class);
+                                                complaints.add(complaint);
+                                            }
+
+                                            getActivity().runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    recyclerView.setAdapter(complaintAdapter);
+                                                }
+                                            });
+
+
                                         }
-                                    });
-
-                                }else {
-
-                                    for(int  i = 0; i< array.length(); i++){
-                                        Complaint complaint = JsonUtils.fromJson((JSONObject) array.get(i), Complaint.class);
-                                        complaints.add(complaint);
+                                    }catch (Exception e){
+                                        e.printStackTrace();
                                     }
-
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            recyclerView.setAdapter(complaintAdapter);
-                                        }
-                                    });
 
 
                                 }
-                            }catch (Exception e){
-                                e.printStackTrace();
                             }
+                        });
 
+                return null;
+            }
+        }, new BackgroundTask.BackgroundTaskListener<String>() {
+            @Override
+            public void onSuccess(String result) {
+                showProgressBar(false);
+            }
 
-                        }
-                    }
-                });
+            @Override
+            public void onFailure(Exception e) {
+                showProgressBar(false);
+            }
+        });
 
+        backgroundTask.execute();
 
-
-
-
-        // Inflate the layout for this fragment
-        showProgressBar(false);
-        return fragmentView;
     }
 
     public void showProgressBar(boolean show) {

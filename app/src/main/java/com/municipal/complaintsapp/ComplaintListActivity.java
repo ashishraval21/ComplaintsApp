@@ -2,11 +2,13 @@ package com.municipal.complaintsapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +19,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.municipal.complaintsapp.fragment.AddComplaintFragment;
 import com.municipal.complaintsapp.fragment.ChangePasswordFragment;
 import com.municipal.complaintsapp.fragment.ComplaintListFragment;
+import com.municipal.complaintsapp.fragment.UserProfileFragment;
 
 import java.io.File;
 
@@ -94,16 +97,52 @@ public class ComplaintListActivity extends AppCompatActivity implements Navigati
                 ChangePasswordFragment changePasswordFragment = new ChangePasswordFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.frameFragment, changePasswordFragment).commit();
             }
+
+            if(id == R.id.nav_account){
+                getSupportActionBar().setTitle("User Details");
+                UserProfileFragment userProfileFragment = new UserProfileFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frameFragment, userProfileFragment).commit();
+
+            }
+
+
+            if(id == R.id.nav_logout){
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+// Set the dialog title
+                builder.setTitle("Logout Confirmation");
+
+// Set the dialog message
+                builder.setMessage("Are you sure you want to logout?");
+
+// Add the "Yes" button
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User clicked Yes button
+                        // Handle logout here
+                    }
+                });
+
+// Add the "No" button
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                    }
+                });
+
+// Create and show the alert dialog
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+
+            }
             //when item is selected then it will close the drawer
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.my_drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
 
         }
 
-    public void showProgressBar(boolean show) {
-        ProgressBar progressBar = findViewById(R.id.progress_bar);
-        progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
-    }
 
     }
 

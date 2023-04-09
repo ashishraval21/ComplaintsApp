@@ -5,10 +5,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -19,29 +19,38 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RatingBar;
+import android.widget.SeekBar;
+import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputLayout;
 import com.municipal.complaintsapp.API.APICallUtils;
 import com.municipal.complaintsapp.API.ApiList;
@@ -51,7 +60,10 @@ import com.municipal.complaintsapp.ComplaintListActivity;
 import com.municipal.complaintsapp.R;
 import com.municipal.complaintsapp.classes.AddComplaint;
 import com.municipal.complaintsapp.classes.Complaint;
+import com.municipal.complaintsapp.util.BackgroundTask;
+import com.municipal.complaintsapp.util.CustomAlertUtils;
 import com.municipal.complaintsapp.util.SharedPreference;
+import com.municipal.complaintsapp.util.TextBoxValidator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -114,6 +126,9 @@ public class AddComplaintFragment extends Fragment {
 
     private AppCompatAutoCompleteTextView autoCompleteTextView;
 
+    private ViewGroup mLayout;
+
+
 
     public AddComplaintFragment() {
         // Required empty public constructor
@@ -151,15 +166,18 @@ public class AddComplaintFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_add_complaint, container, false);
         this.view = view;
 
+        mLayout = view.findViewById(R.id.frameFragment);
+
        // verifyStoragePermissions(getActivity());
         fetchOptionMenu();
         TextInputLayout subjectLayout = view.findViewById(R.id.subject);
         mSubjectEditText = subjectLayout.getEditText();
+        TextBoxValidator.inputValidator(mSubjectEditText);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
         TextInputLayout descriptionLayout = view.findViewById(R.id.description);
         mDescriptionEditText = descriptionLayout.getEditText();
-
+        TextBoxValidator.inputValidator(mDescriptionEditText);
         mImageGrid = view.findViewById(R.id.image_grid);
         mAddImageButton = view.findViewById(R.id.add_image_button);
         mSubmitButton = view.findViewById(R.id.submit_button);
@@ -188,12 +206,24 @@ public class AddComplaintFragment extends Fragment {
             }
         });
 
-        mSubmitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                submitComplaint(null, null);
-            }
-        });
+        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                                        @Override
+                                                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                                            String selectedItem = parent.getItemAtPosition(position).toString();
+                                                            autoCompleteTextView.setText(selectedItem);
+                                                            validateAutoCompleteTextView();
+
+                                                        }
+                                                    });
+
+                mSubmitButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (validateAutoCompleteTextView()) {
+                            submitComplaint(null, null);
+                        }
+                    }
+                });
 
         mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -205,41 +235,91 @@ public class AddComplaintFragment extends Fragment {
         return view;
     }
 
+
+
+
+    private boolean validateAutoCompleteTextView() {
+        String text = autoCompleteTextView.getText().toString().trim();
+        if (text.isEmpty()) {
+            autoCompleteTextView.setError("Please select a valid item");
+            return false;
+        }else{
+            autoCompleteTextView.setError(null);
+        }
+
+        if(TextUtils.isEmpty(mSubjectEditText.getText().toString().trim())){
+            mSubjectEditText.setError("Please enter " + mSubjectEditText.getHint() );
+            return false;
+        }else{
+            mSubjectEditText.setError(null);
+        }
+
+        if(TextUtils.isEmpty(mDescriptionEditText.getText().toString().trim())){
+            mDescriptionEditText.setError("Please enter " + mDescriptionEditText.getHint() );
+            return false;
+        }else{
+            mDescriptionEditText.setError(null);
+        }
+
+
+        // continue with your code
+
+        return true;
+    }
+
     private void fetchOptionMenu() {
 
-        APICallUtils.makeApiCallWithRetry(ApiList.FetchCategoryTypes.getApi(), MethodType.GET.name(), new JSONObject(), new Callback() {
+        new BackgroundTask<>(new BackgroundTask.BackgroundTaskExecutor<String>() {
             @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                // Parse the JSON response to get the options
-                JSONArray jsonArray = null;
-                try {
-                    jsonArray = new JSONArray(response.body().string());
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject option = jsonArray.getJSONObject(i);
-                        String optionKey = option.getString("CategoryName");
-                        optionsList.add(optionKey);
-                        categoryTypeMap.put(optionKey, option.getInt("Id"));
-                        System.out.println(optionKey);
+            public String run() throws Exception {
+                APICallUtils.makeApiCallWithRetry(ApiList.FetchCategoryTypes.getApi(), MethodType.GET.name(), new JSONObject(), new Callback() {
+                    @Override
+                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                        e.printStackTrace();
                     }
 
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            adapter.notifyDataSetChanged();
-                        }
-                    });
+                    @Override
+                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                        // Parse the JSON response to get the options
+                        JSONArray jsonArray = null;
+                        try {
+                            jsonArray = new JSONArray(response.body().string());
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject option = jsonArray.getJSONObject(i);
+                                String optionKey = option.getString("CategoryName");
+                                optionsList.add(optionKey);
+                                categoryTypeMap.put(optionKey, option.getInt("Id"));
+                                System.out.println(optionKey);
+                            }
 
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    adapter.notifyDataSetChanged();
+                                }
+                            });
+
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                    }
+                });
+                return null;
+            }
+        }, new BackgroundTask.BackgroundTaskListener<String>() {
+            @Override
+            public void onSuccess(String result) {
 
             }
-        });
+
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        }).execute();
+
+
     }
 
 
@@ -346,11 +426,11 @@ public class AddComplaintFragment extends Fragment {
     private void submitComplaint(Double latitude, Double longitude) {
 
         //Check the location permission first
-
         if(latitude == null || longitude == null) {
             requestLocationPermission();
             return;
         }
+
 
 
         int UserId = new SharedPreference(getActivity()).getId();
@@ -361,23 +441,56 @@ public class AddComplaintFragment extends Fragment {
                     imagePathList, latitude, longitude);
         }
 
-        APICallUtils.makeApiCallWithRetry(ApiList.AddComplaint.getApi(), MethodType.POST_MULTIPART.toString(), JsonUtils.getJsonObject(complaint), new Callback() {
+
+        Complaint finalComplaint = complaint;
+        BackgroundTask<String> bgTask = new BackgroundTask<>(new BackgroundTask.BackgroundTaskExecutor<String>() {
             @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                e.printStackTrace();
-                Snackbar mySnackbar = Snackbar.make(view, e.getMessage(), BaseTransientBottomBar.LENGTH_LONG);
-                mySnackbar.show();
+            public String run() throws Exception {
+                APICallUtils.makeApiCallWithRetry(ApiList.AddComplaint.getApi(), MethodType.POST_MULTIPART.toString(), JsonUtils.getJsonObject(finalComplaint), new Callback() {
+                    @Override
+                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                        e.printStackTrace();
+                        Snackbar mySnackbar = Snackbar.make(view, e.getMessage(), BaseTransientBottomBar.LENGTH_LONG);
+                        mySnackbar.show();
+                    }
+
+                    @Override
+                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                        if (response.isSuccessful()) {
+
+                            getActivity().runOnUiThread(() -> new CustomAlertUtils(view1 -> {
+                                ComplaintListFragment fragment = new ComplaintListFragment();
+                                FragmentManager fragmentManager = getParentFragmentManager();
+                                FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+                                // Replace the current fragment with the new fragment
+                                transaction.replace(R.id.frameFragment, fragment);
+
+                                // Add the transaction to the back stack
+                                //transaction.addToBackStack(null);
+
+                                // Commit the transaction
+                                transaction.commit();
+                            },getActivity().findViewById(R.id.layoutDialogContainer) ). showCustomAlertDialog("Complaint Register SuccessFully", requireContext()));
+
+                        }
+                    }
+                });
+                return null;
+            }
+        }, new BackgroundTask.BackgroundTaskListener<String>() {
+            @Override
+            public void onSuccess(String result) {
+
             }
 
             @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    Snackbar mySnackbar = Snackbar.make(view, "Complaint Register SuccessFully", BaseTransientBottomBar.LENGTH_LONG);
-                    mySnackbar.show();
+            public void onFailure(Exception e) {
 
-                }
             }
         });
+        bgTask.execute();
+
 
 
     }
@@ -570,5 +683,36 @@ public class AddComplaintFragment extends Fragment {
 
 
     }
+
+    public void resetLayout(ViewGroup viewGroup) {
+        int childCount = viewGroup.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View view = viewGroup.getChildAt(i);
+            if (view instanceof ViewGroup) {
+                resetLayout((ViewGroup) view);
+            } else {
+                if (view instanceof EditText) {
+                    ((EditText) view).setText("");
+                } else if (view instanceof TextView) {
+                    ((TextView) view).setText("");
+                } else if (view instanceof CheckBox) {
+                    ((CheckBox) view).setChecked(false);
+                } else if (view instanceof RadioButton) {
+                    ((RadioButton) view).setChecked(false);
+                } else if (view instanceof Spinner) {
+                    ((Spinner) view).setSelection(0);
+                } else if (view instanceof RatingBar) {
+                    ((RatingBar) view).setRating(0);
+                } else if (view instanceof SeekBar) {
+                    ((SeekBar) view).setProgress(0);
+                } else if (view instanceof Switch) {
+                    ((Switch) view).setChecked(false);
+                } else if (view instanceof ProgressBar) {
+                    ((ProgressBar) view).setProgress(0);
+                }
+            }
+        }
+    }
+
 
 }

@@ -33,6 +33,8 @@ public class SharedPreference {
     public void createSharedPreference(JSONObject json) throws JSONException {
 
         SharedPreferences.Editor editor = sharedpreferences.edit();
+
+        editor.putString("object", json.toString());
         Iterator<String> jsonIterator = json.keys();
         while (jsonIterator.hasNext()){
             String key = jsonIterator.next();
@@ -66,4 +68,6 @@ public class SharedPreference {
     public int getId(){
         return (int) sharedpreferences.getAll().get("Id");
     }
+
+    public String getUserObject() { return  sharedpreferences.getString("object", null);}
 }

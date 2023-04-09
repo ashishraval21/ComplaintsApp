@@ -1,10 +1,14 @@
 package com.municipal.complaintsapp.fragment;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +17,15 @@ import android.widget.EditText;
 
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
 import com.municipal.complaintsapp.API.APICallUtils;
 import com.municipal.complaintsapp.API.ApiList;
 import com.municipal.complaintsapp.API.JsonUtils;
 import com.municipal.complaintsapp.API.MethodType;
 import com.municipal.complaintsapp.R;
+import com.municipal.complaintsapp.util.BackgroundTask;
+import com.municipal.complaintsapp.util.CustomAlertUtils;
+import com.municipal.complaintsapp.util.PasswordValidator;
 import com.municipal.complaintsapp.util.SharedPreference;
 
 import java.io.IOException;
@@ -87,15 +95,16 @@ public class ChangePasswordFragment extends Fragment {
         confirmPassword =  view.findViewById(R.id.confirmPassword);
 
 
+        PasswordValidator.addPasswordValidator(currentPassword);
+        PasswordValidator.addPasswordValidator(newPassword);
+        PasswordValidator.addPasswordValidator(confirmPassword);
+
+
         Button submitButton =  view.findViewById(R.id.submitChangeButton);
         submitButton.setOnClickListener(view1 -> {
             // Perform validation checks for the input passwords
             if (isValidPassword(currentPassword.getText().toString(), newPassword.getText().toString(), confirmPassword.getText().toString())) {
                 updatePassword(currentPassword.getText().toString(), newPassword.getText().toString(), view1);
-            }else{
-
-                Snackbar mySnackbar = Snackbar.make(view1, "Password Mismatch", BaseTransientBottomBar.LENGTH_LONG);
-                mySnackbar.show();
             }
         });
 
@@ -114,10 +123,30 @@ public class ChangePasswordFragment extends Fragment {
     }
 
 
-    private boolean isValidPassword(String currentPassword, String newPassword, String confirmPassword) {
-        if(newPassword == null || confirmPassword == null)
+
+    private boolean isValidPassword(String currentPasswordText, String newPasswordText, String confirmPasswordText) {
+
+        if(TextUtils.isEmpty(currentPasswordText)){
+            currentPassword.setError("Please enter your current password");
             return false;
-        return newPassword.equals(confirmPassword);
+        }
+
+        if(TextUtils.isEmpty(newPasswordText)){
+            newPassword.setError("Please enter your current password");
+            return false;
+        }
+
+        if(TextUtils.isEmpty(confirmPasswordText)){
+             confirmPassword.setError("Please enter confirm password.");
+             return false;
+        }
+
+        if(! newPasswordText.equals(confirmPasswordText)){
+            confirmPassword.setError("New and Confirm password are mismatched.");
+            return false;
+        }
+
+        return true;
     }
 
 
@@ -126,26 +155,66 @@ public class ChangePasswordFragment extends Fragment {
         com.municipal.complaintsapp.classes.ChangePassword password = new com.municipal.complaintsapp.classes.ChangePassword(id, currentPassword,newPassword);
 
 
-        APICallUtils.makeApiCallWithRetry(ApiList.ChangePassword.getApi(), MethodType.PUT.toString(),
-                JsonUtils.getJsonObject(password),  new Callback() {
-                    @Override
-                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                        if(response.isSuccessful()){
+        BackgroundTask<String> bg = new BackgroundTask<>(() -> {
+            APICallUtils.makeApiCallWithRetry(ApiList.ChangePassword.getApi(), MethodType.PUT.toString(),
+                    JsonUtils.getJsonObject(password),  new Callback() {
+                        @Override
+                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                            if(response.isSuccessful()){
+
+                                try{
+                                    String body = response.body().string();
+
+                                    boolean result = Boolean.parseBoolean(body);
+                                    String message = result ? "Password Changed SuccessFully" : "Current Password Mismatched";
+
+                                    getActivity().runOnUiThread(() -> new CustomAlertUtils(view1 -> {
+
+                                    },getActivity().findViewById(R.id.layoutDialogContainer) ).showCustomAlertDialog(message, requireContext()));
 
 
-                            Snackbar mySnackbar = Snackbar.make(view, "Password Changed SuccessFully", BaseTransientBottomBar.LENGTH_LONG);
-                            mySnackbar.show();
+                                }catch (Exception e)
+                                {
+                                    e.printStackTrace();
+                                }
+
+
+                                Snackbar mySnackbar = Snackbar.make(view, "Password Changed SuccessFully", BaseTransientBottomBar.LENGTH_LONG);
+                                mySnackbar.show();
+
+                            }else{
+
+                                getActivity().runOnUiThread(() -> new CustomAlertUtils(view1 -> {
+
+                                },getActivity().findViewById(R.id.layoutDialogContainer) ). showCustomAlertDialog("Something went wrong, Please try again", requireContext()));
+
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                            e.printStackTrace();
+                            getActivity().runOnUiThread(() -> new CustomAlertUtils(view1 -> {
+
+                            },getActivity().findViewById(R.id.layoutDialogContainer) ). showCustomAlertDialog("Current password mismatched.", requireContext()));
 
                         }
-                    }
+                    });
+            return null;
+        }, new BackgroundTask.BackgroundTaskListener<String>() {
+            @Override
+            public void onSuccess(String result) {
 
-                    @Override
-                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                        e.printStackTrace();
-                        Snackbar mySnackbar = Snackbar.make(view, e.getMessage(), BaseTransientBottomBar.LENGTH_LONG);
-                        mySnackbar.show();
-                    }
-                });
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        });
+
+        bg.execute();
+
 
     }
 

@@ -6,22 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".register">
 
-<!--    <com.google.android.material.appbar.AppBarLayout-->
-<!--        android:id="@+id/appbarLayout"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:theme="@style/Theme.ComplaintsApp.AppBarOverlay"-->
-<!--        android:tooltipText="@string/register">-->
-
-<!--        <androidx.appcompat.widget.Toolbar-->
-<!--            android:id="@+id/toolbar"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="?attr/actionBarSize"-->
-<!--            android:background="?attr/colorPrimary"-->
-<!--            app:popupTheme="@style/Theme.ComplaintsApp.PopupOverlay"-->
-<!--            />-->
-
-<!--    </com.google.android.material.appbar.AppBarLayout>-->
 
     <ScrollView
         android:layout_width="fill_parent"
@@ -49,9 +33,10 @@
         android:layout_marginTop="32dp"
         android:layout_below="@+id/imageLogo"
         android:paddingLeft="8dp"
+        app:errorEnabled="true"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         app:shapeAppearance="@style/Rounded"
-        android:hint=" Full Name ">
+        android:hint="Full Name">
 
         <!--this is the actual edit text which takes the input-->
         <com.google.android.material.textfield.TextInputEditText
@@ -62,49 +47,9 @@
             android:width="300dp"
             android:autofillHints="name"
             android:inputType="text"
-            android:text="Ashish"
             android:padding="20dp"/>
 
     </com.google.android.material.textfield.TextInputLayout>
-
-
-<!--    <EditText-->
-<!--        android:layout_below="@+id/appbarLayout"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:id="@+id/nameEdittext"-->
-<!--        android:width="300dp"-->
-<!--        android:autofillHints="name"-->
-<!--        android:hint="@string/name"-->
-<!--        android:inputType="text"-->
-<!--        android:textColorHint="#004D40"-->
-<!--        android:layout_marginTop="75sp"-->
-<!--        android:layout_centerHorizontal="true"/>-->
-<!--    <RadioGroup-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:orientation="horizontal"-->
-<!--        android:layout_below="@+id/filledNameTextField"-->
-<!--        android:id="@+id/radiogroup"-->
-<!--        android:width="300dp"-->
-<!--        android:layout_marginTop="20dp"-->
-<!--        android:layout_marginLeft="60dp">-->
-
-<!--        <RadioButton-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="@string/male"-->
-<!--            android:paddingRight="25sp">-->
-<!--        </RadioButton>-->
-<!--        <RadioButton-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="@string/female">-->
-
-
-<!--        </RadioButton>-->
-
-<!--    </RadioGroup>-->
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/filledMobileNumberTextField"
@@ -116,6 +61,7 @@
         android:layout_below="@+id/filledNameTextField"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         app:shapeAppearance="@style/Rounded"
+        app:errorEnabled="true"
         android:hint="Mobile Number">
 
         <!--this is the actual edit text which takes the input-->
@@ -127,23 +73,9 @@
             android:width="300dp"
             android:autofillHints="name"
             android:inputType="number"
-            android:text="9601122013"
             android:padding="20dp"/>
 
     </com.google.android.material.textfield.TextInputLayout>
-
-<!--    <EditText-->
-<!--        android:layout_below="@+id/radiogroup"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:id="@+id/mobileEdittext"-->
-<!--        android:width="300dp"-->
-<!--        android:autofillHints="phone"-->
-<!--        android:hint="@string/mobileNumber"-->
-<!--        android:inputType="text"-->
-<!--        android:layout_marginTop="20dp"-->
-<!--        android:textColorHint="#004D40"-->
-<!--        android:layout_centerHorizontal="true"/>-->
 
 
     <com.google.android.material.textfield.TextInputLayout
@@ -156,6 +88,7 @@
         android:layout_below="@+id/filledMobileNumberTextField"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         app:shapeAppearance="@style/Rounded"
+        app:errorEnabled="true"
         android:hint="Email Id">
 
         <!--this is the actual edit text which takes the input-->
@@ -167,23 +100,10 @@
             android:width="300dp"
             android:autofillHints="name"
             android:inputType="text"
-            android:text="raval123@gmail.com"
             android:padding="20dp"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
-<!--    <EditText-->
-<!--        android:layout_below="@+id/filledMobileNumberTextField"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:id="@+id/emailEditText"-->
-<!--        android:width="300dp"-->
-<!--        android:autofillHints="emailAddress"-->
-<!--        android:hint="@string/email"-->
-<!--        android:inputType="text"-->
-<!--        android:layout_marginTop="20dp"-->
-<!--        android:textColorHint="#004D40"-->
-<!--        android:layout_centerHorizontal="true"/>-->
 
 
     <com.google.android.material.textfield.TextInputLayout
@@ -198,6 +118,7 @@
         app:shapeAppearance="@style/Rounded"
         app:endIconMode="password_toggle"
         app:endIconTint="@color/colorPrimaryDark"
+        app:errorEnabled="true"
         android:hint="Password">
 
         <!--this is the actual edit text which takes the input-->
@@ -213,56 +134,6 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-<!--    <EditText-->
-<!--        android:layout_below="@+id/emailEditText"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:id="@+id/passwordEditText"-->
-<!--        android:width="300dp"-->
-<!--        android:autofillHints="password"-->
-<!--        android:hint="@string/password"-->
-<!--        android:inputType="text"-->
-<!--        android:layout_marginTop="20dp"-->
-<!--        android:textColorHint="#004D40"-->
-<!--        android:layout_centerHorizontal="true"/>-->
-
-
-<!--    <com.google.android.material.textfield.TextInputLayout-->
-<!--        android:id="@+id/filledcnfrmPasswrdTextField"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginStart="32dp"-->
-<!--        android:layout_marginEnd="32dp"-->
-<!--        android:layout_marginTop="32dp"-->
-<!--        android:layout_below="@+id/filledPasswrdTextField"-->
-<!--        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
-<!--        app:shapeAppearance="@style/Rounded"-->
-<!--        android:hint="Confirm Password">-->
-
-<!--        &lt;!&ndash;this is the actual edit text which takes the input&ndash;&gt;-->
-<!--        <com.google.android.material.textfield.TextInputEditText-->
-<!--            android:id="@+id/confirmpasswordEditText"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="10dp"-->
-<!--            android:width="300dp"-->
-<!--            android:autofillHints="name"-->
-<!--            android:inputType="textPassword"-->
-<!--            android:padding="20dp"/>-->
-
-<!--    </com.google.android.material.textfield.TextInputLayout>-->
-
-<!--    <EditText-->
-<!--        android:layout_below="@+id/passwordEditText"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:id="@+id/confirmpasswordEditText"-->
-<!--        android:width="300dp"-->
-<!--        android:hint="@string/confirmpassword"-->
-<!--        android:inputType="text"-->
-<!--        android:layout_marginTop="20dp"-->
-<!--        android:textColorHint="#004D40"-->
-<!--        android:layout_centerHorizontal="true"/>-->
 
     <Button
         android:id="@+id/btnregisterform"
@@ -317,16 +188,6 @@
 
         </TextView>
 
-<!--    <Button-->
-<!--        android:id="@+id/btnregistercancel"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_below="@+id/filledcnfrmPasswrdTextField"-->
-<!--        android:layout_marginTop="40dp"-->
-<!--        android:layout_marginLeft="40dp"-->
-<!--        android:layout_toRightOf="@id/btnregisterform"-->
-<!--        android:text="@string/cancel"-->
-<!--        />-->
     </RelativeLayout>
     </ScrollView>
 

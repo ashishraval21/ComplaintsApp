@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        app:errorEnabled="true"
         android:hint="Subject">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -29,6 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:layout_below="@+id/subject"
+        app:errorEnabled="true"
         android:hint="Description">
 
         <com.google.android.material.textfield.TextInputEditText
