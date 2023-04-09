@@ -8,36 +8,39 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-        <!-- Primary Colors -->
-        <color name="colorPrimary">#3F51B5</color>
-        <color name="colorPrimaryDark">#303F9F</color>
-        <color name="colorAccent">#FF4081</color>
+    <!-- Primary Colors -->
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
 
-        <!-- Secondary Colors -->
-        <color name="colorSecondary">#FFC107</color>
-        <color name="colorSecondaryDark">#FFA000</color>
-        <color name="colorSecondaryLight">#FFF59D</color>
+    <!-- Secondary Colors -->
+    <color name="colorSecondary">#FFC107</color>
+    <color name="colorSecondaryDark">#FFA000</color>
+    <color name="colorSecondaryLight">#FFF59D</color>
 
-        <!-- Text Colors -->
-        <color name="colorTextPrimary">#212121</color>
-        <color name="colorTextSecondary">#727272</color>
-        <color name="colorTextDisabled">#BDBDBD</color>
+    <!-- Text Colors -->
+    <color name="colorTextPrimary">#212121</color>
+    <color name="colorTextSecondary">#727272</color>
+    <color name="colorTextDisabled">#BDBDBD</color>
 
-        <!-- Background Colors -->
-        <color name="colorBackground">#F5F5F5</color>
-        <color name="colorBackgroundSecondary">#E0E0E0</color>
+    <!-- Background Colors -->
+    <color name="colorBackground">#F5F5F5</color>
+    <color name="colorBackgroundSecondary">#E0E0E0</color>
 
-        <!-- Custom Colors -->
-        <color name="colorCustom1">#8BC34A</color>
-        <color name="colorCustom2">#9C27B0</color>
-        <color name="colorCustom3">#00BCD4</color>
-        <color name="colorCustom4">#FF5722</color>
-        <color name="colorCustom5">#607D8B</color>
+    <!-- Custom Colors -->
+    <color name="colorCustom1">#8BC34A</color>
+    <color name="colorCustom2">#9C27B0</color>
+    <color name="colorCustom3">#00BCD4</color>
+    <color name="colorCustom4">#FF5722</color>
+    <color name="colorCustom5">#607D8B</color>
 
-        <color name="errorColor">#FF0000</color>
-        <color name ="successColor">#00FF00</color>
-
-
+    <color name="errorColor">#FF0000</color>
+    <color name="successColor">#00FF00</color>
+    <color name="light_blue_600">#FF039BE5</color>
+    <color name="light_blue_900">#FF01579B</color>
+    <color name="light_blue_A200">#FF40C4FF</color>
+    <color name="light_blue_A400">#FF00B0FF</color>
+    <color name="black_overlay">#66000000</color>
 
 
 </resources>

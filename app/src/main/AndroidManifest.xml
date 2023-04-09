@@ -6,9 +6,9 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -16,11 +16,11 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.ComplaintsApp"
         android:usesCleartextTraffic="true"
-        android:requestLegacyExternalStorage="true"
-        android:networkSecurityConfig="@xml/network_security_config"
         tools:targetApi="30">
         <activity
             android:name=".ComplaintDetailsView"
@@ -30,9 +30,7 @@
             android:exported="false" />
         <activity
             android:name=".ComplaintListActivity"
-            android:exported="false">
-
-        </activity>
+            android:exported="false" />
         <activity
             android:name=".ForgotPassword"
             android:exported="false" />
@@ -40,28 +38,24 @@
             android:name=".ChangePassword"
             android:exported="false"
             android:label="@string/title_activity_change_password"
-            android:theme="@style/Theme.ComplaintsApp.NoActionBar" >
-
-        </activity>
+            android:theme="@style/Theme.ComplaintsApp.NoActionBar" />
         <activity
             android:name=".register"
             android:exported="true"
-            android:theme="@style/Theme.ComplaintsApp.NoActionBar" >
-
+            android:theme="@style/Theme.ComplaintsApp.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.ComplaintsApp.NoActionBar">
-        </activity>
+            android:theme="@style/Theme.ComplaintsApp.NoActionBar" />
         <activity
             android:name=".add_complaints"
-            android:exported="false"></activity>
+            android:exported="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
